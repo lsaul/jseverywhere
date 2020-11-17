@@ -5,30 +5,33 @@ const { ApolloServer, gql } = require('apollo-server-express');
 
 const port = process.env.PORT || 4000;
 
+// app.get('/', (req, res) => res.send('Hello World!!!'));
+
+// Construct a schema using GraphQL schema language
+const typeDefs = gql`
+  type Query {
+    hello: String
+    jello: String
+  }
+`;
+
+const resolvers = {
+  Query: {
+    hello: () => 'Hello World!',
+    jello: () => 'Is this a query'
+  }
+};
+
 const app = express();
+
 //Apollo Server setup
 const server = new ApolloServer({ typeDefs, resolvers });
 
-app.get('/', (req, res) => res.send('Hello World!!!'));
+//Apply the Apollo graphQL middleware and set the path to /api
+server.applyMiddleware({ app, path: '/api' });
 
 app.listen({ port }, () =>
   console.log(
     'GraphQL Server running at http//localhost: ' + port + server.graphqlPath
   )
 );
-
-//Apply the Apollo graphQL middleware and set the path to /api
-server.applyMiddleware({ app, path: '/api' });
-
-// Construct a schema using GraphQL schema language
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
-
-const resolvers = {
-  Query: {
-    hello: () => 'Hello World!'
-  }
-};
